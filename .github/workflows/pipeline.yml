@@ -66,7 +66,7 @@ jobs:
       # E rode:
       #   grype dir:. --fail-on medium
       - name: 📦 SCA - Grype
-        run:
+        run: |
           npm install --package-lock-only --no-audit --no-fund
           curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
           grype dir:. --fail-on medium
@@ -98,8 +98,7 @@ jobs:
       # Dica da assinatura real:
       #   cosign sign-blob artifact.tar --bundle artifact.sigstore.json --yes
       - name: ✍️ Assinar artefato
-        run:|cosign sign-blob artifact.tar --bundle artifact.sigstore.json --yes
-    
+        run: cosign sign-blob artifact.tar --bundle artifact.sigstore.json --yes
       # ── Publica o artefato + bundle de assinatura para o próximo job
       - name: ⬆️ Upload do artefato assinado
         uses: actions/upload-artifact@v4

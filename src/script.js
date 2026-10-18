@@ -11,10 +11,11 @@ fetch('db.json')
             list.appendChild(li);
         });
     })
-    .catch(err => {        
+    .catch(err => {
+        console.error(err);
         document.getElementById('db-status').innerText =
-            'Erro interno: ' + err.stack;
-    });
+            'Não foi possível carregar os dados. Tente novamente mais tarde.';
+   });
 
 // Adiciona nova tarefa na tela
 function addTask() {

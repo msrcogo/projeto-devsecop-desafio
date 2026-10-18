@@ -55,7 +55,7 @@ jobs:
       - name: 🔍 SAST - Semgrep
         run: |
           pip install semgrep
-          semgrep scan --config auto --error src/
+          semgrep scan --config auto --config p/xss --error src/
 
       # ❌ PASSO A IMPLEMENTAR — SCA com Grype
       # Dica: primeiro, gere o package-lock pelo npm:
@@ -65,7 +65,10 @@ jobs:
       # E rode:
       #   grype dir:. --fail-on medium
       - name: 📦 SCA - Grype
-        run: echo "TODO - implemente o SCA com Grype aqui"
+        run:
+          npm install --package-lock-only --no-audit --no-fund
+          curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
+          grype dir:. --fail-on medium
 
       # ── Empacota o site em um artefato tar (formato que o Pages consome)
       - name: 📦 Empacotar artefato do site
@@ -94,10 +97,8 @@ jobs:
       # Dica da assinatura real:
       #   cosign sign-blob artifact.tar --bundle artifact.sigstore.json --yes
       - name: ✍️ Assinar artefato
-        run: |
-          echo '{ "mock": "assinatura-invalida-para-demonstracao" }' > artifact.sigstore.json
-          echo "Assinatura MOCK gerada."
-
+        run:|cosign sign-blob artifact.tar --bundle artifact.sigstore.json --yes
+    
       # ── Publica o artefato + bundle de assinatura para o próximo job
       - name: ⬆️ Upload do artefato assinado
         uses: actions/upload-artifact@v4
